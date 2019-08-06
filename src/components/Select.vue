@@ -1,11 +1,11 @@
 <template>
     <div>
         <el-select v-model="ruleForm[formItem.key]"
-            :multiple="Array.isArray(formItem.initVal) "
+            :multiple="isArray(formItem.initVal) "
             :filterable="!formItem.options"
             clearable
             :remote="!formItem.options"
-            placeholder="请输入关键词"
+            :placeholder="placeholder"
             :remote-method="remoteMethod">
             <el-option v-for="item in selectOptions"
                 :key="item.value"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { isArr, getOptionsByUrl } from '@/utils'
 export default {
     name: '',
     props: {
@@ -26,12 +27,19 @@ export default {
     },
     computed: {
         selectOptions () {
-            const options = this.formItem.options
+            const { options, urlOptions } = this.formItem
+            if (!options && !urlOptions) throw new ReferenceError("options or urlOptions\" does not exist.open fn.js and add it");
             if (options) {
                 return options
             } else {
+                const data = getOptionsByUrl(urlOptions)
+                return data
                 //jiekouna
             }
+        },
+        placeholder () {
+            const item = this.formItem
+            return item.placeholder ? item.placeholder : `请输入${item.label}`
         }
     },
     data () {
@@ -39,7 +47,11 @@ export default {
         }
     },
 
-    methods: {}
+    methods: {
+        isArray (value) {
+            return isArr(value)
+        }
+    }
 }
 </script>
 

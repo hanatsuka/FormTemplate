@@ -42,6 +42,30 @@ const a = [{
     },
     {
         type: 1,
+        label: '擅长菜',
+        key: 'food',
+        initVal: [],
+        // urlOptions: {
+        //     url: './demo.js',
+        //     keyName: 'records',
+        //     method: 'get'
+        // }
+        options: [{
+                label: '川菜',
+                value: 0
+            },
+            {
+                label: '粤菜',
+                value: 1
+            },
+            {
+                label: '杭帮菜',
+                value: 2
+            },
+        ]
+    },
+    {
+        type: 1,
         label: '性别',
         key: 'sex',
         initVal: 'male',
@@ -119,7 +143,7 @@ const a = [{
         initVal: '',
         inputType: 'textarea',
         maxlength: 1000
-    }
+    },
 ]
 
 export default a

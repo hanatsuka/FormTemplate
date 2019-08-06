@@ -37,7 +37,7 @@ import Check from './components/Check'
 import Date from './components/Date'
 import iSwitch from './components/Switch'
 import Radio from './components/Radio'
-import { transFormType, clearFormData, formatFormData, isUndefined } from './components/fn.js'
+import { transFormType, clearFormData, formatFormData, isUndefined, deepClone } from '@/utils'
 import a from '../demo'
 export default {
     name: '',
@@ -125,7 +125,7 @@ export default {
             this.$refs.formTep.validate((valid) => {
                 // 校验
                 if (valid) {
-                    let formInfo = { ...this.ruleForm }
+                    let formInfo = deepClone(this.ruleForm)
                     // 统一过滤表单
                     formInfo = formatFormData(formInfo)
                     console.log(formInfo)
@@ -140,7 +140,7 @@ export default {
             // 清空表单
             const p = () => {
                 return new Promise((resolve, reject) => {
-                    this.ruleForm = clearFormData(this.ruleForm)
+                    clearFormData(this.ruleForm)
                     resolve()
                 })
             }
