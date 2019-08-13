@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import { isArr, getOptionsByUrl } from '@/utils'
+import { isArr } from '@/utils'
+import { getOptionsByUrl } from '@/utils/formFns'
 export default {
     name: '',
     props: {
