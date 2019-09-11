@@ -78,30 +78,10 @@ export default {
             }
         }
     },
-    computed: {
-        // ruleForm () {
-        //     let obj = {}
-        //     if (this.list.length > 0) {
-        //         for (const iterator of this.list) {
-        //             this.$set(obj, iterator.key, iterator.initVal || null)
-        //         }
-        //     }
-        //     return obj
-        //     // const handler = {
-        //     //     get (target, property) {
-        //     //         return target[property]
-        //     //     },
-        //     //     set (target, property, value) {
-        //     //         target[property] = value
-        //     //         return true
-        //     //     }
-        //     // }
-        //     // return new Proxy(obj, handler)
-        // }
-    },
     data () {
         return {
             ruleForm: {},
+            formKeys: []
         }
     },
     created () {
@@ -114,6 +94,7 @@ export default {
                 for (const iterator of this.formBaseData) {
                     let initVal = iterator.initVal
                     if (isUndefined(initVal)) initVal = null
+                    this.formKeys.push(iterator.key)
                     this.$set(this.ruleForm, iterator.key, initVal)
                 }
             }
@@ -124,7 +105,7 @@ export default {
                 if (valid) {
                     let formInfo = deepClone(this.ruleForm)
                     // 统一过滤表单
-                    formatFormData(formInfo)
+                    formatFormData(formInfo, this.formKeys)
                     console.log(formInfo)
                 }
             })
@@ -137,7 +118,7 @@ export default {
             // 清空表单
             const p = () => {
                 return new Promise((resolve, reject) => {
-                    clearFormData(this.ruleForm)
+                    clearFormData(this.ruleForm, this.formKeys)
                     resolve()
                 })
             }

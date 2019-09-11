@@ -68,8 +68,8 @@ export const setRules = (function () {
 /**
  * 格式化表单数据
  */
-export const formatFormData = (obj) => {
-    for (const key in obj) {
+export const formatFormData = (obj, keys) => {
+    for (const key of keys) {
         let value = obj[key]
         if (isArr(value)) {
             obj[key] = value.toString()
@@ -86,8 +86,8 @@ export const formatFormData = (obj) => {
 /**
  * 清空表单数据
  */
-export const clearFormData = (obj) => {
-    for (const key in obj) {
+export const clearFormData = (obj, keys) => {
+    for (const key of keys) {
         let value = obj[key]
         if (isArr(value)) {
             obj[key] = []
