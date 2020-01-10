@@ -35,7 +35,7 @@ export const transFormType = (typeNum) => {
             componentName = 'Radio'
             break
         default:
-            throwError("formType \"" + typeNum + "\" does not exist.open fn.js and add it");
+            return new Error("formType \"" + typeNum + "\" does not exist.open fn.js and add it");
     }
     return componentName
 }
@@ -87,6 +87,7 @@ export const formatFormData = (obj, keys) => {
  * 清空表单数据
  */
 export const clearFormData = (obj, keys) => {
+    if (!keys) keys = Object.keys(obj)
     for (const key of keys) {
         let value = obj[key]
         if (isArr(value)) {

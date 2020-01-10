@@ -1,6 +1,7 @@
 <template>
     <div class="formTemplate">
-        <el-form ref="formTep"
+        <el-form @submit.native.prevent
+            ref="formTep"
             :inline="false"
             :label-position="labelPosition"
             :model="ruleForm"
@@ -18,13 +19,19 @@
                     :ruleForm="ruleForm"
                     :formItem="formItem"></components>
             </el-form-item>
-            <div v-if="showFootBtn">
-                <el-button @click="handleClick"
+            <slot name="spe"></slot>
+            <div v-if="showFootBtn"
+                class="text-center">
+                <el-button :class="['btn-primary m-t-4', btnClass]"
+                    :loading="btnLoading"
+                    @click="handleClick"
                     type="primary">{{footBtnLabel}}</el-button>
-                <el-button @click="resetForm"
-                    v-if="showFootReset">重置</el-button>
-                <el-button @click="clearForm"
-                    v-if="showFootClear">清空</el-button>
+                <el-button class="btn"
+                    @click="resetForm"
+                    v-if="showFootReset">RESET</el-button>
+                <el-button class="btn"
+                    @click="clearForm"
+                    v-if="showFootClear">CLEAR</el-button>
             </div>
         </el-form>
     </div>
@@ -45,6 +52,12 @@ export default {
         Input, Select, Check, Date, iSwitch, Radio
     },
     props: {
+        data: {
+            type: Object,
+            default () {
+                return {}
+            }
+        },
         formBaseData: Array,
         rules: Object,
         showFootBtn: {
@@ -55,7 +68,7 @@ export default {
         },
         footBtnLabel: {
             type: String,
-            default: '提交'
+            default: 'SUBMIT'
         },
         labelPosition: {
             type: String,
@@ -76,16 +89,30 @@ export default {
             default () {
                 return true
             }
-        }
+        },
+        btnLoading: {
+            type: Boolean,
+            default () {
+                return false
+            }
+        },
+        btnClass: String
     },
     data () {
         return {
             ruleForm: {},
-            formKeys: []
         }
     },
     created () {
         this.init()
+    },
+    watch: {
+        formBaseData: {
+            handler () {
+                this.init()
+            },
+            deep: true
+        }
     },
     methods: {
         init () {
@@ -94,19 +121,21 @@ export default {
                 for (const iterator of this.formBaseData) {
                     let initVal = iterator.initVal
                     if (isUndefined(initVal)) initVal = null
-                    this.formKeys.push(iterator.key)
                     this.$set(this.ruleForm, iterator.key, initVal)
                 }
             }
         },
         handleClick () {
+            this.$emit('submitLoading', true)
             this.$refs.formTep.validate((valid) => {
                 // 校验
                 if (valid) {
                     let formInfo = deepClone(this.ruleForm)
                     // 统一过滤表单
-                    formatFormData(formInfo, this.formKeys)
-                    console.log(formInfo)
+                    formatFormData(formInfo)
+                    this.$emit('submitForm', formInfo)
+                } else {
+                    this.$emit('submitLoading', false)
                 }
             })
         },
@@ -116,13 +145,11 @@ export default {
         },
         clearForm () {
             // 清空表单
-            const p = () => {
-                return new Promise((resolve, reject) => {
-                    clearFormData(this.ruleForm, this.formKeys)
-                    resolve()
-                })
-            }
-            p().then(() => {
+            let p = new Promise((resolve) => {
+                clearFormData(this.ruleForm)
+                resolve()
+            })
+            p.then(() => {
                 this.$refs.formTep.clearValidate()
             })
         },
@@ -134,8 +161,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.formTemplate-item {
-    margin-right: 20px;
-}
+<style lang="scss" scoped>
 </style>
